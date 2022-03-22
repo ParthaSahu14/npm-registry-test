@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var jsxRuntime = require('react/jsx-runtime');
 var DataTable = require('react-data-table-component');
+var reactRouterDom = require('react-router-dom');
 var React = require('react');
 var util$a = require('util');
 var require$$0$2 = require('fs');
@@ -48,25 +49,6 @@ var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
 var MyTestComponent = function (_a) {
     var name = _a.name;
     return (jsxRuntime.jsx(jsxRuntime.Fragment, { children: jsxRuntime.jsxs("p", { children: ["Hello, ", name] }) }));
-};
-
-var columns = [
-    {
-        name: 'Title',
-        selector: function (row) { return row.title; },
-    },
-    {
-        name: 'Director',
-        selector: function (row) { return row.director; },
-    },
-    {
-        name: 'Year',
-        selector: function (row) { return row.year; },
-    },
-];
-var DataTableComponent = function (_a) {
-    var data = _a.data;
-    return (jsxRuntime.jsx(jsxRuntime.Fragment, { children: jsxRuntime.jsx(DataTable__default["default"], { title: "Movies", columns: columns, data: data, defaultSortFieldId: "title", pagination: true, selectableRows: true }) }));
 };
 
 /*! *****************************************************************************
@@ -335,6 +317,51 @@ var tslib_es6 = /*#__PURE__*/Object.freeze({
     __classPrivateFieldGet: __classPrivateFieldGet,
     __classPrivateFieldSet: __classPrivateFieldSet
 });
+
+var dataSet = [{Id:"1",title:"Transformers: The Last Knight",director:"Michael Bay",year:"2017"},{Id:"2",title:"Transformers: Age of Extinction",director:"Travis Knight",year:"2014"}];
+
+var columns = [
+    {
+        name: 'Id',
+        selector: function (row) { return row.Id; },
+    },
+    {
+        name: 'Title',
+        selector: function (row) { return row.title; },
+        cell: function (row) { return jsxRuntime.jsxs(reactRouterDom.Link, __assign({ to: "/movies/".concat(row.Id) }, { children: [" ", row.title, " "] })); }
+    },
+    {
+        name: 'Director',
+        selector: function (row) { return row.director; },
+    },
+    {
+        name: 'Year',
+        selector: function (row) { return row.year; },
+    },
+];
+var DataTableComponent = function (_a) {
+    var data = _a.data;
+    return (jsxRuntime.jsx(jsxRuntime.Fragment, { children: jsxRuntime.jsx(DataTable__default["default"], { title: "Movies", columns: columns, data: data || dataSet, defaultSortFieldId: "title", pagination: true, selectableRows: true }) }));
+};
+
+var TableDetailsComponent = function (_a) {
+    // const [data, setData] = useState({});
+    // useEffect(() => {
+    //     let params = useParams();
+    //     let selectedId = params['ItemId'] || '';
+    //     if (selectedId) {
+    //         let obj = dataSet.filter(m => m.Id === selectedId);
+    //         setData(obj);
+    //     }
+    // }, []);
+    var params = reactRouterDom.useParams();
+    var data = null;
+    var selectedId = params['ItemId'] || '';
+    if (selectedId) {
+        data = dataSet.filter(function (m) { return m.Id === selectedId; });
+    }
+    return (jsxRuntime.jsx(jsxRuntime.Fragment, { children: jsxRuntime.jsxs("div", { children: [jsxRuntime.jsxs("div", { children: ["Selected Item Id : ", selectedId] }), jsxRuntime.jsx("div", { children: data != null ? JSON.stringify(data) : 'No Data Found.' })] }) }));
+};
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -47283,3 +47310,4 @@ var Registration = function () {
 exports.DataTableComponent = DataTableComponent;
 exports.MyTestComponent = MyTestComponent;
 exports.Registration = Registration;
+exports.TableDetailsComponent = TableDetailsComponent;

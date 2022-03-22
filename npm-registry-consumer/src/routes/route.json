@@ -1,0 +1,32 @@
+{
+    "routes" : [
+        {
+            "name" : "Home",
+            "path" : "/",
+            "component" : "LandingComponent",
+            "props": {
+                "name": "Partha"
+            },
+            "menu": true
+        },
+        {
+            "name" : "Movies",
+            "path" : "/movies",
+            "component" : "DataTableComponent",
+            "menu": true,
+            "props": {}
+        },
+        {
+            "name" : "MovieDetails",
+            "path": "/movies/:ItemId",
+            "component": "TableDetailsComponent",
+            "props": {}
+        },
+        {
+            "name" : "Registration",
+            "path" : "/registration",
+            "component" : "Registration",
+            "menu": true
+        }
+    ]
+}

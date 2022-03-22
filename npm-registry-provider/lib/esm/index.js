@@ -1,5 +1,6 @@
 import { jsx, Fragment, jsxs } from 'react/jsx-runtime';
 import DataTable from 'react-data-table-component';
+import { Link, useParams } from 'react-router-dom';
 import * as React from 'react';
 import React__default, { forwardRef, useContext, createElement, createContext, Fragment as Fragment$1, useRef, useLayoutEffect, useState, useEffect } from 'react';
 import * as util$a from 'util';
@@ -14,25 +15,6 @@ import ReactDOM__default from 'react-dom';
 var MyTestComponent = function (_a) {
     var name = _a.name;
     return (jsx(Fragment, { children: jsxs("p", { children: ["Hello, ", name] }) }));
-};
-
-var columns = [
-    {
-        name: 'Title',
-        selector: function (row) { return row.title; },
-    },
-    {
-        name: 'Director',
-        selector: function (row) { return row.director; },
-    },
-    {
-        name: 'Year',
-        selector: function (row) { return row.year; },
-    },
-];
-var DataTableComponent = function (_a) {
-    var data = _a.data;
-    return (jsx(Fragment, { children: jsx(DataTable, { title: "Movies", columns: columns, data: data, defaultSortFieldId: "title", pagination: true, selectableRows: true }) }));
 };
 
 /*! *****************************************************************************
@@ -301,6 +283,51 @@ var tslib_es6 = /*#__PURE__*/Object.freeze({
     __classPrivateFieldGet: __classPrivateFieldGet,
     __classPrivateFieldSet: __classPrivateFieldSet
 });
+
+var dataSet = [{Id:"1",title:"Transformers: The Last Knight",director:"Michael Bay",year:"2017"},{Id:"2",title:"Transformers: Age of Extinction",director:"Travis Knight",year:"2014"}];
+
+var columns = [
+    {
+        name: 'Id',
+        selector: function (row) { return row.Id; },
+    },
+    {
+        name: 'Title',
+        selector: function (row) { return row.title; },
+        cell: function (row) { return jsxs(Link, __assign({ to: "/movies/".concat(row.Id) }, { children: [" ", row.title, " "] })); }
+    },
+    {
+        name: 'Director',
+        selector: function (row) { return row.director; },
+    },
+    {
+        name: 'Year',
+        selector: function (row) { return row.year; },
+    },
+];
+var DataTableComponent = function (_a) {
+    var data = _a.data;
+    return (jsx(Fragment, { children: jsx(DataTable, { title: "Movies", columns: columns, data: data || dataSet, defaultSortFieldId: "title", pagination: true, selectableRows: true }) }));
+};
+
+var TableDetailsComponent = function (_a) {
+    // const [data, setData] = useState({});
+    // useEffect(() => {
+    //     let params = useParams();
+    //     let selectedId = params['ItemId'] || '';
+    //     if (selectedId) {
+    //         let obj = dataSet.filter(m => m.Id === selectedId);
+    //         setData(obj);
+    //     }
+    // }, []);
+    var params = useParams();
+    var data = null;
+    var selectedId = params['ItemId'] || '';
+    if (selectedId) {
+        data = dataSet.filter(function (m) { return m.Id === selectedId; });
+    }
+    return (jsx(Fragment, { children: jsxs("div", { children: [jsxs("div", { children: ["Selected Item Id : ", selectedId] }), jsx("div", { children: data != null ? JSON.stringify(data) : 'No Data Found.' })] }) }));
+};
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -47246,4 +47273,4 @@ var Registration = function () {
                 } }), jsx("p", { children: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32." })] }));
 };
 
-export { DataTableComponent, MyTestComponent, Registration };
+export { DataTableComponent, MyTestComponent, Registration, TableDetailsComponent };

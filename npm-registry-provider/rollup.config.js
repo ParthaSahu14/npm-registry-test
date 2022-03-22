@@ -17,7 +17,7 @@ export default {
       format: 'es',
     },
   ],
-  external: ['react', 'react-dom', 'styled-component', 'react-data-table-component'],
+  external: ['react', 'react-dom', 'styled-component', 'react-data-table-component', 'react-router-dom'],
   plugins: [
     nodeResolve(),
     commonjs(),
