@@ -11,13 +11,13 @@ function App() {
         component = React.lazy(() => import('./components/Landing.component'));
         break;
       case "DataTableComponent":
-        component = React.lazy(() => import('npm-registry-provider').then(({ DataTableComponent }) => ({ default: DataTableComponent })));
+        component = React.lazy(() => import('npm-registry-provider/lib/esm/DataTableModule').then(({ DataTableComponent }) => ({ default: DataTableComponent })));
         break;
       case "TableDetailsComponent":
-        component = React.lazy(() => import('npm-registry-provider').then(({ TableDetailsComponent }) => ({ default: TableDetailsComponent })));
+        component = React.lazy(() => import('npm-registry-provider/lib/esm/TableDetailsModule').then(({ TableDetailsComponent }) => ({ default: TableDetailsComponent })));
         break;
       case "Registration":
-        component = React.lazy(() => import('npm-registry-provider').then(({ Registration }) => ({ default: Registration })));
+        component = React.lazy(() => import('npm-registry-provider/lib/esm/RegistrationModule').then(({ Registration }) => ({ default: Registration })));
         break;
       default:
         break;

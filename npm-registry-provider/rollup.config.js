@@ -2,18 +2,19 @@ import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
+import multiInput from 'rollup-plugin-multi-input';
 
 import pkg from './package.json';
 
 export default {
-  input: 'src/index.ts',
+  input: ['src/index.ts', 'src/MyTestComponentModule.ts', 'src/DataTableModule.ts', 'src/TableDetailsModule.ts', 'src/RegistrationModule.ts'],
   output: [
     {
-      file: './lib/cjs/index.js',
+      dir: './lib/cjs',
       format: 'cjs',
     },
     {
-      file: './lib/esm/index.js',
+      dir: './lib/esm',
       format: 'es',
     },
   ],
@@ -26,6 +27,7 @@ export default {
     }),
     json({
       compact: true
-    })
+    }),
+    multiInput({ relative: 'src/' })
   ],
 };
