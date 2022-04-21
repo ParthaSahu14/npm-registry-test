@@ -32,7 +32,83 @@ const DocumentViewerComponent: React.FC<DocumentViewerProps> = ({ sourceUrl }) =
         // { uri: 'http://localhost:3001/testdocoument.pdf' }
     ];
 
+    const downloadDoc = async () => {
+        let chunkSize = 1024 * 1024 * 10;
+        let chunks = Math.ceil(62488129 / chunkSize);
+        let chunkEndpoints: IChunkRequest[] = [];
+        let lastChunkByte = 0;
+        for (let i = 0; i < chunks; i++) {
+            let currentByte = 0;
+            //chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${i}-${currentByte}` });
+            if (i == 0) {
+                currentByte = chunkSize;
+                chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${i}-${currentByte}` });
+            }
+            else {
+                currentByte = (i + 1) * chunkSize
+                chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${lastChunkByte}-${currentByte}` });
+            }
+            lastChunkByte = currentByte;
+
+        }
+        console.log(chunkEndpoints);
+        let fileByte: Array<Buffer> = [];
+        for (let i = 0; i < chunkEndpoints.length; i++) {
+            const element = chunkEndpoints[i];
+            const res = await axios.post(element.Url, { range: element.range },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    responseType: 'blob'
+                }
+            );
+            fileByte.push(res.data);
+        }
+
+        const blob = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fileURL = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = fileURL;
+        link.download = 'test.xlsx';
+        link.click();
+
+        //window.open(fileURL);
+
+        // axios.all(chunkEndpoints.map((endpoint) => axios.post(endpoint.Url, { range: endpoint.range },
+        //     {
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         responseType: 'blob'
+        //     }
+        // )))
+        //     .then(axios.spread((...responses) => {
+        //         let fileByte: Array<Buffer> = [];
+        //         var combined = new Uint8Array([]);
+        //         responses.forEach(res => {
+        //             //fileByte = res.data
+        //             fileByte.push(res.data);
+
+        //         });
+        //         const blob = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        //         // .arrayBuffer().then(arrBuffer => {
+        //         //     console.log(arrBuffer);
+        //         // })
+        //         const fileURL = URL.createObjectURL(blob);
+        //         const link = document.createElement('a');
+
+        //         link.href = fileURL;
+        //         link.download = 'test.xlsx';
+        //         link.click();
+
+        //         window.open(fileURL);
+        //     }))
+    };
+
     useEffect(() => {
+        downloadDoc();
         // axios.get('http://localhost:3001/getfile', { responseType: 'blob' }).then((res) => {
         //     console.log(res);
         //     const file = new Blob(
@@ -59,51 +135,65 @@ const DocumentViewerComponent: React.FC<DocumentViewerProps> = ({ sourceUrl }) =
         //     // window.open('https://sppartha.sharepoint.com/_layouts/15/download.aspx?UniqueId=a5f1dd90-e036-4bf5-b9f5-bdaac5992a0a&Translate=false&tempauth=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvc3BwYXJ0aGEuc2hhcmVwb2ludC5jb21AZmQzYWVjNzgtYzU0My00NzNkLTkzNjktM2E5MDNkNWFiZmIyIiwiaXNzIjoiMDAwMDAwMDMtMDAwMC0wZmYxLWNlMDAtMDAwMDAwMDAwMDAwIiwibmJmIjoiMTY1MDI2NjMxMSIsImV4cCI6IjE2NTAyNjk5MTEiLCJlbmRwb2ludHVybCI6IkVaMEo1SU03a1hWcUVpS2dZeWo2bmNNNVRKOGhmU0QzcGZjZDhRRFgwbm89IiwiZW5kcG9pbnR1cmxMZW5ndGgiOiIxMTkiLCJpc2xvb3BiYWNrIjoiVHJ1ZSIsImNpZCI6Ill6RXhOMll6TmpJdE5Ea3hOaTB4WXpNMUxXRTJaV0l0TkdGaFl6QTRNelUxTm1GbCIsInZlciI6Imhhc2hlZHByb29mdG9rZW4iLCJzaXRlaWQiOiJNV05sWkRnd01XRXRNRFl4TmkwME1UUXpMVGcxTkdRdE0ySm1ZMlF5WXpRMFlUaGgiLCJhcHBfZGlzcGxheW5hbWUiOiJHcmFwaCBFeHBsb3JlciIsImdpdmVuX25hbWUiOiJQYXJ0aGFzYXJhdGhpIiwiZmFtaWx5X25hbWUiOiJTYWh1IiwiYXBwaWQiOiJkZThiYzhiNS1kOWY5LTQ4YjEtYThhZC1iNzQ4ZGE3MjUwNjQiLCJ0aWQiOiJmZDNhZWM3OC1jNTQzLTQ3M2QtOTM2OS0zYTkwM2Q1YWJmYjIiLCJ1cG4iOiJhZG1pbkBzcHBhcnRoYS5vbm1pY3Jvc29mdC5jb20iLCJwdWlkIjoiMTAwMzIwMDEzNzY0MkNEQSIsImNhY2hla2V5IjoiMGguZnxtZW1iZXJzaGlwfDEwMDMyMDAxMzc2NDJjZGFAbGl2ZS5jb20iLCJzY3AiOiJteWZpbGVzLnJlYWQgYWxsZmlsZXMucmVhZCBteWZpbGVzLndyaXRlIGFsbGZpbGVzLndyaXRlIGFsbHNpdGVzLnJlYWQgYWxscHJvZmlsZXMucmVhZCIsInR0IjoiMiIsInVzZVBlcnNpc3RlbnRDb29raWUiOm51bGwsImlwYWRkciI6IjIwLjE5MC4xNDUuMTY5In0.d295clJmeXBLNlY4dWdzV0NBcUhtbVpwY2srMEN5dFFCUXNiU0JOMm5UMD0&ApiVersion=2.0', "_self");
         // });
 
-        let chunkSize = 1024 * 1024 * 70;
-        let chunks = Math.ceil(70422424 / chunkSize);
-        let chunkEndpoints: IChunkRequest[] = [];
-        let lastChunkByte = 0;
-        for (let i = 0; i < chunks; i++) {
-            let currentByte = 0;
-            //chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${i}-${currentByte}` });
-            if (i == 0) {
-                currentByte = chunkSize;
-                chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${i}-${currentByte}` });
-            }
-            else {
-                currentByte = (i + 1) * chunkSize
-                chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${lastChunkByte}-${currentByte}` });
-            }
-            lastChunkByte = currentByte;
-            // if (i == 1) {
-            //     break;
-            // }
+        // let chunkSize = 1024 * 1024 * 10;
+        // let chunks = Math.ceil(70422424 / chunkSize);
+        // let chunkEndpoints: IChunkRequest[] = [];
+        // let lastChunkByte = 0;
+        // for (let i = 0; i < chunks; i++) {
+        //     let currentByte = 0;
+        //     //chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${i}-${currentByte}` });
+        //     if (i == 0) {
+        //         currentByte = chunkSize;
+        //         chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${i}-${currentByte}` });
+        //     }
+        //     else {
+        //         currentByte = (i + 1) * chunkSize
+        //         chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${lastChunkByte}-${currentByte}` });
+        //     }
+        //     lastChunkByte = currentByte;
+        //     // if (i == 1) {
+        //     //     break;
+        //     // }
 
-        }
-        console.log(chunkEndpoints);
+        // }
+        // console.log(chunkEndpoints);
 
-        const options = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
+        // axios.all(chunkEndpoints.map((endpoint) => axios.post(endpoint.Url, { range: endpoint.range },
+        //     {
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         responseType: 'blob'
+        //     }
+        // )))
+        //     .then(axios.spread((...responses) => {
+        //         let fileByte: Array<Buffer> = [];
+        //         var combined = new Uint8Array([]);
+        //         responses.forEach(res => {
+        //             //fileByte = res.data
+        //             fileByte.push(res.data);
 
-        axios.all(chunkEndpoints.map((endpoint) => axios.post(endpoint.Url, { range: endpoint.range }, options)))
-            .then(axios.spread((...responses) => {
-                let fileByte: Array<Buffer> = [];
-                var combined = new Uint8Array([]);
-                responses.forEach(res => {
-                    //fileByte = res.data
-                    fileByte.push(res.data);
+        //         });
+        //         const blob = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        //         // .arrayBuffer().then(arrBuffer => {
+        //         //     console.log(arrBuffer);
+        //         // })
+        //         const fileURL = URL.createObjectURL(blob);
+        //         const link = document.createElement('a');
 
-                });
-                const concatenated = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                // .arrayBuffer().then(arrBuffer => {
-                //     console.log(arrBuffer);
-                // })
-                const fileURL = URL.createObjectURL(concatenated);
-                window.open(fileURL);
-            }))
+        //         link.href = fileURL;
+        //         link.download = 'test.xlsx';
+        //         link.click();
+
+        //         window.open(fileURL);
+        //     }))
+
+
+
+
+
+
+
         // .then(
         //     (responses) => {
         //         let fileByte: string = '';
