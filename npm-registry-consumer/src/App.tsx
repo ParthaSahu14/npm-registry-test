@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { routes } from "./routes/route.json";
 import HeaderComponent from "./components/Header";
+import DocumentViewerComponent from './components/Document-Viwer.component';
+
 
 function App() {
   const getReactComponent = (componentName: string): any => {
@@ -30,6 +32,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <HeaderComponent name='Portal Header' />
+        <DocumentViewerComponent sourceUrl='https://github.com/ParthaSahu14/npm-registry-test/raw/master/npm-registry-consumer/testdocoument.pdf' />
         <div className='App-container'>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>

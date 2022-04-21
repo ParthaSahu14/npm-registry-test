@@ -1,0 +1,2 @@
+(this["webpackJsonpnpm-registry-consumer"]=this["webpackJsonpnpm-registry-consumer"]||[]).push([[7],{310:function(e,s,n){"use strict";n.r(s);n(0);var r=n(2);s.default=function(e){var s=e.name;return Object(r.jsxs)(r.Fragment,{children:[Object(r.jsxs)("p",{children:["Hello, ",s]}),Object(r.jsx)("div",{})]})}}}]);
+//# sourceMappingURL=7.739faa0f.chunk.js.map

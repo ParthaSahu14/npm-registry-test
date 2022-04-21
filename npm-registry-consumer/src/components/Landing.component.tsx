@@ -1,4 +1,5 @@
 import React from 'react';
+// import DocumentViewerComponent from "./Document-Viwer.component";
 
 export interface LandingProps {
     name: string;
@@ -7,6 +8,9 @@ export interface LandingProps {
 const LandingComponent: React.FC<LandingProps> = ({ name }) => (
     <>
         <p>Hello, {name}</p>
+        <div>
+            {/* <DocumentViewerComponent /> */}
+        </div>
     </>
 );
 

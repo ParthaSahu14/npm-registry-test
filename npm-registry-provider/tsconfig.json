@@ -12,7 +12,7 @@
     "jsx": "react-jsx",
     "declaration": true,
     "moduleResolution": "node",
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "esModuleInterop": true,
     "noImplicitReturns": true,
