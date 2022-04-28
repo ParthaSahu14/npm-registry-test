@@ -48,63 +48,62 @@ const DocumentViewerComponent: React.FC<DocumentViewerProps> = ({ sourceUrl }) =
                 currentByte = (i + 1) * chunkSize
                 chunkEndpoints.push({ Url: 'http://localhost:3003/download', range: `${lastChunkByte}-${currentByte}` });
             }
-            lastChunkByte = currentByte;
+            lastChunkByte = currentByte + 1;
 
         }
         console.log(chunkEndpoints);
-        let fileByte: Array<Buffer> = [];
-        for (let i = 0; i < chunkEndpoints.length; i++) {
-            const element = chunkEndpoints[i];
-            const res = await axios.post(element.Url, { range: element.range },
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    responseType: 'blob'
-                }
-            );
-            fileByte.push(res.data);
-        }
+        // let fileByte: Array<Buffer> = [];
+        // for (let i = 0; i < chunkEndpoints.length; i++) {
+        //     const element = chunkEndpoints[i];
+        //     const res = await axios.post(element.Url, { range: element.range },
+        //         {
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             responseType: 'blob'
+        //         }
+        //     );
+        //     fileByte.push(res.data);
+        // }
 
-        const blob = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const fileURL = URL.createObjectURL(blob);
-        const link = document.createElement('a');
+        // const blob = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        // const fileURL = URL.createObjectURL(blob);
+        // const link = document.createElement('a');
 
-        link.href = fileURL;
-        link.download = 'test.xlsx';
-        link.click();
+        // link.href = fileURL;
+        // link.download = 'test.xlsx';
+        // link.click();
 
-        //window.open(fileURL);
 
-        // axios.all(chunkEndpoints.map((endpoint) => axios.post(endpoint.Url, { range: endpoint.range },
-        //     {
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         responseType: 'blob'
-        //     }
-        // )))
-        //     .then(axios.spread((...responses) => {
-        //         let fileByte: Array<Buffer> = [];
-        //         var combined = new Uint8Array([]);
-        //         responses.forEach(res => {
-        //             //fileByte = res.data
-        //             fileByte.push(res.data);
+        axios.all(chunkEndpoints.map((endpoint) => axios.post(endpoint.Url, { range: endpoint.range },
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                responseType: 'blob'
+            }
+        )))
+            .then(axios.spread((...responses) => {
+                let fileByte: Array<Buffer> = [];
+                var combined = new Uint8Array([]);
+                responses.forEach(res => {
+                    //fileByte = res.data
+                    fileByte.push(res.data);
 
-        //         });
-        //         const blob = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        //         // .arrayBuffer().then(arrBuffer => {
-        //         //     console.log(arrBuffer);
-        //         // })
-        //         const fileURL = URL.createObjectURL(blob);
-        //         const link = document.createElement('a');
+                });
+                const blob = new Blob(fileByte, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                // .arrayBuffer().then(arrBuffer => {
+                //     console.log(arrBuffer);
+                // })
+                const fileURL = URL.createObjectURL(blob);
+                const link = document.createElement('a');
 
-        //         link.href = fileURL;
-        //         link.download = 'test.xlsx';
-        //         link.click();
+                link.href = fileURL;
+                link.download = 'test.xlsx';
+                link.click();
 
-        //         window.open(fileURL);
-        //     }))
+                //window.open(fileURL);
+            }))
     };
 
     useEffect(() => {

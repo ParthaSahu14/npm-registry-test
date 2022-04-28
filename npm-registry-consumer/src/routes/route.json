@@ -27,6 +27,12 @@
             "path" : "/registration",
             "component" : "Registration",
             "menu": true
+        },
+        {
+            "name" : "Material",
+            "path" : "/layout",
+            "component" : "MaterialLayoutComponent",
+            "menu": true
         }
     ]
 }

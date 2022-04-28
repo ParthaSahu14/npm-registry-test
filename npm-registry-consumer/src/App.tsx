@@ -21,6 +21,9 @@ function App() {
       case "Registration":
         component = React.lazy(() => import('npm-registry-provider/lib/esm/RegistrationModule').then(({ Registration }) => ({ default: Registration })));
         break;
+      case "MaterialLayoutComponent":
+        component = React.lazy(() => import('./components/material.component'));
+        break;
       default:
         break;
     }
@@ -32,7 +35,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <HeaderComponent name='Portal Header' />
-        <DocumentViewerComponent sourceUrl='https://github.com/ParthaSahu14/npm-registry-test/raw/master/npm-registry-consumer/testdocoument.pdf' />
+        {/* <DocumentViewerComponent sourceUrl='https://github.com/ParthaSahu14/npm-registry-test/raw/master/npm-registry-consumer/testdocoument.pdf' /> */}
         <div className='App-container'>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>

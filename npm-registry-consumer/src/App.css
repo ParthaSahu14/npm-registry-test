@@ -1,12 +1,16 @@
-.App {
+.App {}
 
+.App-container {
+  /* padding: 50px; */
 }
-.App-container{
-  padding: 50px;
-}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.MuiGrid-item {
+  /* padding-left: 0 !important; */
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -14,12 +18,14 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-.App-header-container{
+
+.App-header-container {
   flex-direction: row;
   display: flex;
   flex: 1;
   background-color: #282c34;
 }
+
 .App-header {
   padding-left: 20px;
   height: 100px;
@@ -28,17 +34,20 @@
   color: white;
   flex: 6;
 }
-.App-link-container{
+
+.App-link-container {
   padding: 20px;
   padding-right: 100px;
   display: flex;
   flex: 2;
   align-items: center;
 }
-.App-link-container a{
+
+.App-link-container a {
   padding-left: 20px;
   text-decoration: none;
 }
+
 .App-link {
   color: white;
   flex-direction: row;
@@ -49,6 +58,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
